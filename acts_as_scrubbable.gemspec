@@ -9,7 +9,8 @@ Gem::Specification.new do |s|
   s.email       = ['samer.masry@gmail.com']
   s.homepage    = 'https://github.com/smasry/acts_as_scrubbable'
   s.summary     = %q{Scrubbing data made easy}
-  s.description = %q{}
+  s.description = %q{ActsAsScrubbable helps you scrub your database the easy way with mock data at the ActiveRecord level}
+  s.license     = "MIT"
   s.required_ruby_version = '~> 2.0'
 
   s.add_runtime_dependency 'activesupport'    , '~> 4.1'
