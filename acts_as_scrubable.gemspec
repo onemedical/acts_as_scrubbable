@@ -7,7 +7,7 @@ Gem::Specification.new do |s|
   s.platform    = Gem::Platform::RUBY
   s.authors     = ['Samer Masry']
   s.email       = ['samer.masry@gmail.com']
-  s.homepage    = ''
+  s.homepage    = 'https://github.com/smasry/acts_as_scrubbable'
   s.summary     = %q{Scrubbing data made easy}
   s.description = %q{}
   s.required_ruby_version = '~> 2.0'
