@@ -34,3 +34,9 @@ class Address
   acts_as_scrubbable :lng => :longitude, :lat => :latitude
 end
 ```
+
+
+### To run
+```
+rake scrub
+```
