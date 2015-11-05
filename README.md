@@ -39,4 +39,24 @@ end
 ### To run
 ```
 rake scrub
+
+....
+Type SCRUB to continue.
+SCRUB
+W, [2015-11-05T14:09:20.900771 #64194]  WARN -- : Scrubbing classes
+I, [2015-11-05T14:09:24.228012 #64194]  INFO -- : Scrubbing ClassToScrub
+...
+I, [2015-11-05T14:09:25.615155 #64194]  INFO -- : Scrub Complete!
+
+```
+
+
+### Extending
+
+You may find the need to extend or add additional generators
+
+```ruby
+ActsAsScrubbable.configure do |c|
+  c.add :email_with_prefix, -> { "prefix-#{Faker::Internet.email}" }
+end
 ```

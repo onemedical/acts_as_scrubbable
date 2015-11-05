@@ -15,5 +15,5 @@ end
 class NonScrubbableModel < ActiveRecord::Base; end
 
 class ScrubbableModel < ActiveRecord::Base
-  acts_as_scrubbable :first_name, address1: :street_address
+  acts_as_scrubbable :first_name, :address1 => :street_address, :lat => :latitude
 end
