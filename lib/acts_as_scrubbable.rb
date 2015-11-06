@@ -11,8 +11,17 @@ module ActsAsScrubbable
   autoload :Scrub
   autoload :VERSION
 
+
   def self.configure(&block)
     yield self
+  end
+
+  def self.after_hook(&block)
+    @after_hook = block
+  end
+
+  def self.execute_after_hook
+    @after_hook.call if @after_hook
   end
 
   def self.add(key, value)
@@ -26,15 +35,21 @@ module ActsAsScrubbable
       :first_name        => -> { Faker::Name.first_name },
       :last_name         => -> { Faker::Name.first_name },
       :middle_name       => -> { Faker::Name.name },
-      :full_name         => -> { Faker::Name.name },
+      :name              => -> { Faker::Name.name },
       :email             => -> { Faker::Internet.email },
       :name_title        => -> { Faker::Name.title },
       :company_name      => -> { Faker::Company.name },
       :street_address    => -> { Faker::Address.street_address },
       :secondary_address => -> { Faker::Address.secondary_address },
+      :zip_code          => -> { Faker::Address.zip_code },
+      :state_abbr        => -> { Faker::Address.state_abbr },
+      :state             => -> { Faker::Address.state },
       :city              => -> { Faker::Address.city },
       :latitude          => -> { Faker::Address.latitude },
-      :longitude         => -> { Faker::Address.longitude }
+      :longitude         => -> { Faker::Address.longitude },
+      :username          => -> { Faker::Internet.user_name },
+      :boolean           => -> { [true, false ].sample },
+      :school            => -> { Faker::University.name }
     }
   end
 end

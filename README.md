@@ -53,10 +53,15 @@ I, [2015-11-05T14:09:25.615155 #64194]  INFO -- : Scrub Complete!
 
 ### Extending
 
-You may find the need to extend or add additional generators
+You may find the need to extend or add additional generators or an after_hook
 
 ```ruby
 ActsAsScrubbable.configure do |c|
   c.add :email_with_prefix, -> { "prefix-#{Faker::Internet.email}" }
+
+  c.after_hook do
+    puts "Running after commit"
+    ActiveRecord::Base.connection.execute("SELECT * FROM FOO")
+  end
 end
 ```
