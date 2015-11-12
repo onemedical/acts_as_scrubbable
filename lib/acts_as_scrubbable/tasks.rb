@@ -1,3 +1,4 @@
+
 require 'rake'
 
 namespace :scrub do
@@ -8,6 +9,7 @@ namespace :scrub do
     require 'highline/import'
     require 'term/ansicolor'
     require 'logger'
+    require 'parallel'
 
     @logger = Logger.new($stdout)
 
@@ -23,23 +25,30 @@ namespace :scrub do
 
     @total_scrubbed = 0
 
-    ActiveRecord::Base.descendants.sort_by{|d| d.to_s }.each do |ar_class|
-      next unless ar_class.scrubbable?
+    ar_classes = ActiveRecord::Base.descendants.select{|d| d.scrubbable? }.sort_by{|d| d.to_s }
+    Parallel.each(ar_classes) do |ar_class|
+
+      @logger.info "Scrubbing #{ar_class} ...".green
 
       scrubbed_count = 0
-      ar_class.find_in_batches do |batch|
-        batch.each do |obj|
-          obj.scrub!
-          scrubbed_count += 1
+
+      ActiveRecord::Base.connection_pool.with_connection do
+        ar_class.find_in_batches(batch_size: 1000) do |batch|
+          ActiveRecord::Base.transaction do
+            batch.each do |obj|
+              obj.scrub!
+              scrubbed_count += 1
+            end
+          end
         end
       end
-      @logger.info "Scrubbed #{scrubbed_count} #{ar_class} objects".green
-      @total_scrubbed += scrubbed_count
+
+      @logger.info "#{scrubbed_count} #{ar_class} objects scrubbed".blue
     end
 
+    @logger.info "Running after hook".red
     ActsAsScrubbable.execute_after_hook
 
-    @logger.info "#{@total_scrubbed} scrubbed objects".blue
     @logger.info "Scrub Complete!".white
   end
 end

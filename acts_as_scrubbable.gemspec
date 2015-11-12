@@ -19,6 +19,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'faker'            , '~> 1.4'
   s.add_runtime_dependency 'highline'         , '~> 1.7'
   s.add_runtime_dependency 'term-ansicolor'   , '~> 1.3'
+  s.add_runtime_dependency 'parallel'         , '~> 1.6'
 
   s.add_development_dependency 'rspec'        , '~> 3.3'
   s.add_development_dependency 'guard'        , '~> 2.13'
