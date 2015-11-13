@@ -39,7 +39,11 @@ namespace :scrub do
       scrubbed_count = 0
 
       ActiveRecord::Base.connection_pool.with_connection do
-        ar_class.find_in_batches(batch_size: 1000) do |batch|
+
+        relation = ar_class.scoped
+        relation = relation.send(:scrubbable_scope) if ar_class.respond_to?(:scrubbable_scope)
+
+        relation.find_in_batches(batch_size: 1000) do |batch|
           ActiveRecord::Base.transaction do
             batch.each do |obj|
               obj.scrub!

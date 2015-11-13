@@ -25,6 +25,10 @@ class User < ActiveRecord::Base
 
   acts_as_scrubbable :first_name, :last_name
 
+
+  # optionally you can add a scope to limit the rows to update
+  scope :scrubbable_scope, -> { where(some_value: true) }
+
   ...
 end
 ```
