@@ -28,6 +28,10 @@ namespace :scrub do
     ar_classes = ActiveRecord::Base.descendants.select{|d| d.scrubbable? }.sort_by{|d| d.to_s }
     Parallel.each(ar_classes) do |ar_class|
 
+      # Removing any find or initialize callbacks from model
+      ar_class.reset_callbacks(:initialize)
+      ar_class.reset_callbacks(:find)
+
       @logger.info "Scrubbing #{ar_class} ...".green
 
       scrubbed_count = 0
