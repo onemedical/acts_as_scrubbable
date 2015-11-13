@@ -2,7 +2,10 @@
 
 Scrubbing made easy
 
-Acts as scrubbable give you model level access to scrub your data per object
+Acts as scrubbable give you model level access to scrub your data per object.
+
+It runs using the parallel gem for faster processing which is dependent on the
+amount of cores available on the box.  *More cores == faster scrubbing*
 
 
 ## Installation
@@ -50,6 +53,13 @@ I, [2015-11-05T14:09:25.615155 #64194]  INFO -- : Scrub Complete!
 
 ```
 
+In the case you are automating the rake task and want to skip the confirmation
+
+```
+rake scrub SKIP_CONFIRM=true
+```
+
+
 
 ### Extending
 
@@ -61,7 +71,7 @@ ActsAsScrubbable.configure do |c|
 
   c.after_hook do
     puts "Running after commit"
-    ActiveRecord::Base.connection.execute("SELECT * FROM FOO")
+    ActiveRecord::Base.connection.execute("TRUNCATE some_table")
   end
 end
 ```

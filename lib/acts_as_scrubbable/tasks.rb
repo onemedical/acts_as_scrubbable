@@ -13,10 +13,12 @@ namespace :scrub do
 
     @logger = Logger.new($stdout)
 
-    answer = ask("Type SCRUB to continue.".red)
-    unless answer == "SCRUB"
-      puts "exiting ...".red
-      exit
+    unless ENV["SKIP_CONFIRM"] == "true"
+      answer = ask("Type SCRUB to continue.".red)
+      unless answer == "SCRUB"
+        puts "exiting ...".red
+        exit
+      end
     end
 
     @logger.warn "Scrubbing classes".red
