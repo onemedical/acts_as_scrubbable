@@ -11,6 +11,8 @@ namespace :scrub do
     require 'logger'
     require 'parallel'
 
+    include Term::ANSIColor
+
     @logger = Logger.new($stdout)
 
     unless ENV["SKIP_CONFIRM"] == "true"
