@@ -33,7 +33,7 @@ module ActsAsScrubbable
 
     @_scrub_map ||= {
       :first_name        => -> { Faker::Name.first_name },
-      :last_name         => -> { Faker::Name.first_name },
+      :last_name         => -> { Faker::Name.last_name },
       :middle_name       => -> { Faker::Name.name },
       :name              => -> { Faker::Name.name },
       :email             => -> { Faker::Internet.email },
