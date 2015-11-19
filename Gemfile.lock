@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    acts_as_scrubbable (0.0.7)
+    acts_as_scrubbable (0.1.0)
       activerecord (~> 4.1)
       activesupport (~> 4.1)
       faker (~> 1.4)

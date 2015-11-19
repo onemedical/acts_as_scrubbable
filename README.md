@@ -44,16 +44,22 @@ end
 
 
 ### To run
+
+The confirmation message will be the db host
+
 ```
 rake scrub
 
 ....
-Type SCRUB to continue.
-SCRUB
-W, [2015-11-05T14:09:20.900771 #64194]  WARN -- : Scrubbing classes
-I, [2015-11-05T14:09:24.228012 #64194]  INFO -- : Scrubbing ClassToScrub
+2015-11-19 10:52:51 -0800: [WARN] - Please verify the information below to continue
+2015-11-19 10:52:51 -0800: [WARN] - Host:  127.0.0.1
+2015-11-19 10:52:51 -0800: [WARN] - Database: blog_development
+Type '127.0.0.1' to continue.
+-> 127.0.0.1
+2015-11-19 10:52:51 -0800: [WARN] -- : Scrubbing classes
+2015-11-19 10:52:51 -0800: [WARN] -- : Scrubbing ClassToScrub
 ...
-I, [2015-11-05T14:09:25.615155 #64194]  INFO -- : Scrub Complete!
+2015-11-19 10:52:51 -0800: [WARN] -- : Scrub Complete!
 
 ```
 
@@ -61,6 +67,12 @@ In the case you are automating the rake task and want to skip the confirmation
 
 ```
 rake scrub SKIP_CONFIRM=true
+```
+
+If you want to limit the classes you to be scrubbed you can set the `SCRUB_CLASSES` variable
+
+```
+rake scrub SCRUB_CLASSES=Blog,Post
 ```
 
 
