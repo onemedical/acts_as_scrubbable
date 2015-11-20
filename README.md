@@ -75,6 +75,12 @@ If you want to limit the classes you to be scrubbed you can set the `SCRUB_CLASS
 rake scrub SCRUB_CLASSES=Blog,Post
 ```
 
+If you want to skip the afterhook
+
+```
+rake scrub SKIP_AFTERHOOK=true
+```
+
 
 
 ### Extending

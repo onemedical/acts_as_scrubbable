@@ -82,8 +82,11 @@ namespace :scrub do
       @logger.info "#{scrubbed_count} #{ar_class} objects scrubbed".blue
     end
 
-    @logger.info "Running after hook".red
-    ActsAsScrubbable.execute_after_hook
+
+    if ENV["SKIP_AFTERHOOK"].blank?
+      @logger.info "Running after hook".red
+      ActsAsScrubbable.execute_after_hook
+    end
 
     @logger.info "Scrub Complete!".white
   end
