@@ -85,6 +85,7 @@ rake scrub SKIP_AFTERHOOK=true
 
 ### Extending
 
+
 You may find the need to extend or add additional generators or an after_hook
 
 ```ruby
