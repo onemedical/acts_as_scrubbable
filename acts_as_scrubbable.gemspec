@@ -7,19 +7,19 @@ Gem::Specification.new do |s|
   s.platform    = Gem::Platform::RUBY
   s.authors     = ['Samer Masry']
   s.email       = ['samer.masry@gmail.com']
-  s.homepage    = 'https://github.com/smasry/acts_as_scrubbable'
+  s.homepage    = 'https://github.com/onemedical/acts_as_scrubbable'
   s.summary     = %q{Scrubbing data made easy}
   s.description = %q{ActsAsScrubbable helps you scrub your database the easy way with mock data at the ActiveRecord level}
   s.license     = "MIT"
   s.required_ruby_version = '~> 2.0'
 
-  s.add_runtime_dependency 'activesupport'    , '~> 4.1'
-  s.add_runtime_dependency 'activerecord'     , '~> 4.1'
-  s.add_runtime_dependency 'railties'         , '~> 4.1'
-  s.add_runtime_dependency 'faker'            , '~> 1.4'
-  s.add_runtime_dependency 'highline'         , '~> 1.7'
-  s.add_runtime_dependency 'term-ansicolor'   , '~> 1.3'
-  s.add_runtime_dependency 'parallel'         , '~> 1.6'
+  s.add_runtime_dependency 'activesupport'    , '>= 4.1'
+  s.add_runtime_dependency 'activerecord'     , '>= 4.1'
+  s.add_runtime_dependency 'railties'         , '>= 4.1'
+  s.add_runtime_dependency 'faker'            , '>= 1.4'
+  s.add_runtime_dependency 'highline'         , '>= 1.7'
+  s.add_runtime_dependency 'term-ansicolor'   , '>= 1.3'
+  s.add_runtime_dependency 'parallel'         , '>= 1.6'
 
   s.add_development_dependency 'rspec'        , '~> 3.3'
   s.add_development_dependency 'guard'        , '~> 2.13'
