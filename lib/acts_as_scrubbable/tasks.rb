@@ -81,7 +81,7 @@ namespace :scrub do
 
       @logger.info "#{scrubbed_count} #{ar_class} objects scrubbed".blue
     end
-
+    ActiveRecord::Base.connection.verify!
 
     if ENV["SKIP_AFTERHOOK"].blank?
       @logger.info "Running after hook".red
