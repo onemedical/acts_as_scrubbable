@@ -7,7 +7,7 @@ Gem::Specification.new do |s|
   s.platform    = Gem::Platform::RUBY
   s.authors     = ['Samer Masry']
   s.email       = ['samer.masry@gmail.com']
-  s.homepage    = 'https://github.com/onemedical/acts_as_scrubbable'
+  s.homepage    = 'https://github.com/smasry/acts_as_scrubbable'
   s.summary     = %q{Scrubbing data made easy}
   s.description = %q{ActsAsScrubbable helps you scrub your database the easy way with mock data at the ActiveRecord level}
   s.license     = "MIT"
