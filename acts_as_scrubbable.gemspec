@@ -13,13 +13,13 @@ Gem::Specification.new do |s|
   s.license     = "MIT"
   s.required_ruby_version = '~> 2.0'
 
-  s.add_runtime_dependency 'activesupport'    , '~> 4.1'
-  s.add_runtime_dependency 'activerecord'     , '~> 4.1'
-  s.add_runtime_dependency 'railties'         , '~> 4.1'
-  s.add_runtime_dependency 'faker'            , '~> 1.4'
-  s.add_runtime_dependency 'highline'         , '~> 1.7'
-  s.add_runtime_dependency 'term-ansicolor'   , '~> 1.3'
-  s.add_runtime_dependency 'parallel'         , '~> 1.6'
+  s.add_runtime_dependency 'activesupport'    , '>= 4.1', '< 5.1'
+  s.add_runtime_dependency 'activerecord'     , '>= 4.1', '< 5.1'
+  s.add_runtime_dependency 'railties'         , '>= 4.1', '< 5.1'
+  s.add_runtime_dependency 'faker'            , '>= 1.4'
+  s.add_runtime_dependency 'highline'         , '>= 1.7'
+  s.add_runtime_dependency 'term-ansicolor'   , '>= 1.3'
+  s.add_runtime_dependency 'parallel'         , '>= 1.6'
 
   s.add_development_dependency 'rspec'        , '~> 3.3'
   s.add_development_dependency 'guard'        , '~> 2.13'
