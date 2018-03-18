@@ -21,6 +21,7 @@ module ActsAsScrubbable
       end
 
       class_eval do
+        define_callbacks :scrub
 
         def self.scrubbable?
           true

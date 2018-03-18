@@ -16,4 +16,11 @@ class NonScrubbableModel < ActiveRecord::Base; end
 
 class ScrubbableModel < ActiveRecord::Base
   acts_as_scrubbable :first_name, :address1 => :street_address, :lat => :latitude
+  attr_accessor :scrubbing_begun, :scrubbing_finished
+  set_callback :scrub, :before do
+    self.scrubbing_begun = true
+  end
+  set_callback :scrub, :after do
+    self.scrubbing_finished = true
+  end
 end
