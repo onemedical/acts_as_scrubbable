@@ -2,7 +2,9 @@ module ActsAsScrubbable
   module Scrub
 
     def scrub!
-      if self.class.scrubbable?
+      return unless self.class.scrubbable?
+
+      run_callbacks(:scrub) do
         _updates = {}
 
         scrubbable_fields.each do |_field, value|
@@ -20,7 +22,6 @@ module ActsAsScrubbable
 
         self.update_columns(_updates) unless _updates.empty?
       end
-
     end
   end
 end

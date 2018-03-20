@@ -31,5 +31,10 @@ RSpec.describe ActsAsScrubbable::Scrub do
       expect(subject.address1).to be_nil
     end
 
+    it 'runs scrub callbacks' do
+      subject.scrub!
+      expect(subject.scrubbing_begun).to be(true)
+      expect(subject.scrubbing_finished).to be(true)
+    end
   end
 end
