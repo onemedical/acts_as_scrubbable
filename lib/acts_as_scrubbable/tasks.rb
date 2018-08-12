@@ -16,8 +16,12 @@ namespace :scrub do
       "#{datetime}: [#{severity}] - #{msg}\n"
     end
 
-    db_host = ActiveRecord::Base.connection_config[:host]
-    db_name = ActiveRecord::Base.connection_config[:database]
+    if ENV["SKIP_BEFOREHOOK"].blank?
+      @logger.info "Running before hook".red
+      ActsAsScrubbable.execute_before_hook
+    end
+
+    db_host, db_name = ActiveRecord::Base.connection_config.values_at(:host, :database)
 
     @logger.warn "Please verify the information below to continue".red
     @logger.warn "Host: ".red + " #{db_host}".white

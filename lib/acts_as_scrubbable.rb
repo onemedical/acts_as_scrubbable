@@ -11,9 +11,16 @@ module ActsAsScrubbable
   autoload :Scrub
   autoload :VERSION
 
-
   def self.configure(&block)
     yield self
+  end
+
+  def self.before_hook(&block)
+    @before_hook = block
+  end
+
+  def self.execute_before_hook
+    @before_hook.call if @before_hook
   end
 
   def self.after_hook(&block)

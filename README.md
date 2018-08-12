@@ -46,7 +46,6 @@ end
 
 ```
 
-
 Incase the mapping is not straight forward
 
 ```ruby
@@ -87,21 +86,30 @@ If you want to limit the classes you to be scrubbed you can set the `SCRUB_CLASS
 rake scrub SCRUB_CLASSES=Blog,Post
 ```
 
+If you want to skip the beforehook
+
+```
+rake scrub SKIP_BEFOREHOOK=true
+```
+
 If you want to skip the afterhook
 
 ```
 rake scrub SKIP_AFTERHOOK=true
 ```
 
-
-
 ### Extending
 
-You may find the need to extend or add additional generators or an after_hook
+You may find the need to extend or add additional generators or an before_hook/after_hook
 
 ```ruby
 ActsAsScrubbable.configure do |c|
   c.add :email_with_prefix, -> { "prefix-#{Faker::Internet.email}" }
+
+  c.before_hook do
+    puts "Running before scrub"
+    raise "Don't run in production" if Rails.env.production?
+  end
 
   c.after_hook do
     puts "Running after commit"
