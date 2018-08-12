@@ -1,11 +1,10 @@
 require 'spec_helper'
 
 RSpec.describe ActsAsScrubbable::Scrub do
-
   describe '.scrub' do
-
     # update_columns cannot be run on a new record
     subject{ ScrubbableModel.new }
+
     before(:each) { subject.save }
 
     it 'changes the first_name attribute when scrub is run' do
@@ -31,10 +30,34 @@ RSpec.describe ActsAsScrubbable::Scrub do
       expect(subject.address1).to be_nil
     end
 
+    it "doesn't update the field if the scrub type is `:skip`" do
+      subject.middle_name = "Edward"
+      subject.save
+      subject.scrub!
+      expect(subject.middle_name).to eq "Edward"
+    end
+
+    it "updates the field to nil if the scrub type is :wipe" do
+      subject.last_name = "Cortéz"
+      subject.save
+      subject.scrub!
+      expect(subject.last_name).to be_nil
+    end
+
     it 'runs scrub callbacks' do
       subject.scrub!
       expect(subject.scrubbing_begun).to be(true)
       expect(subject.scrubbing_finished).to be(true)
+    end
+
+    context 'when sterilizable? is true' do
+      subject { SterilizableModel.new }
+
+      it 'deletes all records' do
+        subject.save
+        subject.scrub!
+        expect(subject.class.all).to be_empty
+      end
     end
   end
 end

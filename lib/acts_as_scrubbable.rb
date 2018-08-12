@@ -49,11 +49,10 @@ module ActsAsScrubbable
       :longitude         => -> { Faker::Address.longitude },
       :username          => -> { Faker::Internet.user_name },
       :boolean           => -> { [true, false ].sample },
-      :school            => -> { Faker::University.name }
+      :school            => -> { Faker::University.name },
     }
   end
 end
-
 
 ActiveSupport.on_load(:active_record) do
   extend ActsAsScrubbable::Scrubbable
