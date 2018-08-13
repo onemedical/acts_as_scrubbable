@@ -52,11 +52,14 @@ module ActsAsScrubbable
       :state_abbr        => -> { Faker::Address.state_abbr },
       :state             => -> { Faker::Address.state },
       :city              => -> { Faker::Address.city },
+      :full_address      => -> { Faker::Address.full_address },
       :latitude          => -> { Faker::Address.latitude },
       :longitude         => -> { Faker::Address.longitude },
       :username          => -> { Faker::Internet.user_name },
       :boolean           => -> { [true, false ].sample },
       :school            => -> { Faker::University.name },
+      :bs                => -> { Faker::Company.bs },
+      :phone_number      => -> { Faker::PhoneNumber.phone_number }
     }
   end
 end
