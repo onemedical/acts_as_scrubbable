@@ -16,14 +16,22 @@ gem 'acts_as_scrubbable'
 
 ## Usage
 
-Simple add the configuration for your fields that map directly to your columns
+Add the configuration for your fields that map directly to your columns and a scrub_type
+for those columns.
 
+Default Scrub types include:
+- `scrub` - scrub the field's value based on it's name or mapping (see mapping case below)
+- `skip` - do not scrub the field's value
+- `wipe` - set the field's value to nil on scrub
+- `sterilize` - delete all records for this model on scrub
 
 ```ruby
-class User < ActiveRecord::Base
+class ScrubExample < ActiveRecord::Base
   ...
 
-  acts_as_scrubbable :first_name, :last_name
+  acts_as_scrubbable :scrub, :first_name # first_name will be random after `scrub!`
+  acts_as_scrubbable :skip, :middle_name # middle_name will be original value after `scrub!`
+  acts_as_scrubbable :wipe, :last_name # last_name will be `nil` after `scrub!`
 
 
   # optionally you can add a scope to limit the rows to update
@@ -31,17 +39,20 @@ class User < ActiveRecord::Base
 
   ...
 end
-```
 
+class SterilizeExample < ActiveRecord::Base
+  acts_as_scrubbable :sterilize # table will contain no records after `scrub!`
+end
+
+```
 
 Incase the mapping is not straight forward
 
 ```ruby
 class Address
-  acts_as_scrubbable :lng => :longitude, :lat => :latitude
+  acts_as_scrubbable :scrub, :lng => :longitude, :lat => :latitude
 end
 ```
-
 
 ### To run
 
@@ -75,21 +86,30 @@ If you want to limit the classes you to be scrubbed you can set the `SCRUB_CLASS
 rake scrub SCRUB_CLASSES=Blog,Post
 ```
 
+If you want to skip the beforehook
+
+```
+rake scrub SKIP_BEFOREHOOK=true
+```
+
 If you want to skip the afterhook
 
 ```
 rake scrub SKIP_AFTERHOOK=true
 ```
 
-
-
 ### Extending
 
-You may find the need to extend or add additional generators or an after_hook
+You may find the need to extend or add additional generators or an before_hook/after_hook
 
 ```ruby
 ActsAsScrubbable.configure do |c|
   c.add :email_with_prefix, -> { "prefix-#{Faker::Internet.email}" }
+
+  c.before_hook do
+    puts "Running before scrub"
+    raise "Don't run in production" if Rails.env.production?
+  end
 
   c.after_hook do
     puts "Running after commit"
