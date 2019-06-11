@@ -5,8 +5,34 @@ RSpec.describe ActsAsScrubbable::Scrub do
   describe '.scrub' do
 
     # update_columns cannot be run on a new record
-    subject{ ScrubbableModel.new }
+    subject { ScrubbableModel.new }
     before(:each) { subject.save }
+
+    it 'scrubs all columns' do
+      subject.attributes = {
+        first_name: "Ted",
+        last_name: "Lowe",
+        middle_name: "Cassidy",
+        name: "Miss Vincenzo Smitham",
+        email: "trentdibbert@wiza.com",
+        title: "Internal Consultant",
+        company_name: "Greenfelder, Collier and Lesch",
+        address1: "86780 Watsica Flats",
+        address2: "Apt. 913",
+        zip_code: "49227",
+        state: "Ohio",
+        state_short: "OH",
+        city: "Port Hildegard",
+        lat: -79.5855309778974,
+        lon: 13.517352691513906,
+        username: "oscar.hermann",
+        active: false,
+        school: "Eastern Lebsack",
+      }
+      expect {
+        subject.scrub!
+      }.not_to raise_error
+    end
 
     it 'changes the first_name attribute when scrub is run' do
       subject.first_name = "Ted"
