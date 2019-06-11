@@ -37,7 +37,7 @@ module ActsAsScrubbable
       :middle_name       => -> { Faker::Name.name },
       :name              => -> { Faker::Name.name },
       :email             => -> { Faker::Internet.email },
-      :name_title        => -> { Faker::Name.title },
+      :name_title        => -> { defined? Faker::Job ? Faker::Job.title : Faker::Name.title },
       :company_name      => -> { Faker::Company.name },
       :street_address    => -> { Faker::Address.street_address },
       :secondary_address => -> { Faker::Address.secondary_address },
