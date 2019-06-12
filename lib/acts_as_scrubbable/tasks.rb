@@ -12,27 +12,27 @@ namespace :scrub do
 
     include Term::ANSIColor
 
-    @logger = Logger.new($stdout)
-    @logger.formatter = proc do |severity, datetime, progname, msg|
+    logger = Logger.new($stdout)
+    logger.formatter = proc do |severity, datetime, progname, msg|
        "#{datetime}: [#{severity}] - #{msg}\n"
     end
 
     db_host = ActiveRecord::Base.connection_config[:host]
     db_name = ActiveRecord::Base.connection_config[:database]
 
-    @logger.warn "Please verify the information below to continue".red
-    @logger.warn "Host: ".red + " #{db_host}".white
-    @logger.warn "Database: ".red + "#{db_name}".white
+    logger.warn "Please verify the information below to continue".red
+    logger.warn "Host: ".red + " #{db_host}".white
+    logger.warn "Database: ".red + "#{db_name}".white
 
     unless ENV["SKIP_CONFIRM"] == "true"
       answer = ask("Type '#{db_host}' to continue. \n".red + '-> '.white)
       unless answer == db_host
-        @logger.error "exiting ...".red
+        logger.error "exiting ...".red
         exit
       end
     end
 
-    @logger.warn "Scrubbing classes".red
+    logger.warn "Scrubbing classes".red
 
     Rails.application.eager_load! # make sure all the classes are loaded
 
@@ -44,14 +44,14 @@ namespace :scrub do
       ar_classes = ar_classes & class_list
     end
 
-    @logger.info "Scrubbable Classes: #{ar_classes.join(', ')}".white
+    logger.info "Scrubbable Classes: #{ar_classes.join(', ')}".white
 
     Parallel.each(ar_classes) do |ar_class|
       # Removing any find or initialize callbacks from model
       ar_class.reset_callbacks(:initialize)
       ar_class.reset_callbacks(:find)
 
-      @logger.info "Scrubbing #{ar_class} ...".green
+      logger.info "Scrubbing #{ar_class} ...".green
 
       scrubbed_count = 0
 
@@ -72,16 +72,16 @@ namespace :scrub do
         end
       end
 
-      @logger.info "#{scrubbed_count} #{ar_class} objects scrubbed".blue
+      logger.info "#{scrubbed_count} #{ar_class} objects scrubbed".blue
     end
     ActiveRecord::Base.connection.verify!
 
     if ENV["SKIP_AFTERHOOK"].blank?
-      @logger.info "Running after hook".red
+      logger.info "Running after hook".red
       ActsAsScrubbable.execute_after_hook
     end
 
-    @logger.info "Scrub Complete!".white
+    logger.info "Scrub Complete!".white
   end
 
   desc "Scrub one table"
@@ -93,22 +93,22 @@ namespace :scrub do
 
     include Term::ANSIColor
 
-    @logger = Logger.new($stdout)
-    @logger.formatter = proc do |severity, datetime, progname, msg|
+    logger = Logger.new($stdout)
+    logger.formatter = proc do |severity, datetime, progname, msg|
        "#{datetime}: [#{severity}] - #{msg}\n"
     end
 
     db_host = ActiveRecord::Base.connection_config[:host]
     db_name = ActiveRecord::Base.connection_config[:database]
 
-    @logger.warn "Please verify the information below to continue".red
-    @logger.warn "Host: ".red + " #{db_host}".white
-    @logger.warn "Database: ".red + "#{db_name}".white
+    logger.warn "Please verify the information below to continue".red
+    logger.warn "Host: ".red + " #{db_host}".white
+    logger.warn "Database: ".red + "#{db_name}".white
 
     unless ENV["SKIP_CONFIRM"] == "true"
       answer = ask("Type '#{db_host}' to continue. \n".red + '-> '.white)
       unless answer == db_host
-        @logger.error "exiting ...".red
+        logger.error "exiting ...".red
         exit
       end
     end
@@ -116,15 +116,15 @@ namespace :scrub do
     Rails.application.eager_load! # make sure all the classes are loaded
 
     ar_class = args[:ar_class].constantize
-    @logger.info "Scrubbing #{ar_class} ...".green
+    logger.info "Scrubbing #{ar_class} ...".green
 
     num_batches = Integer(ENV.fetch("SCRUB_BATCHES", "256"))
     scrubbed_count = ActsAsScrubbable::ParallelTableScrubber.new(ar_class).scrub(num_batches: num_batches)
 
-    @logger.info "#{scrubbed_count} #{ar_class} objects scrubbed".blue
+    logger.info "#{scrubbed_count} #{ar_class} objects scrubbed".blue
     ActiveRecord::Base.connection.verify!
 
-    @logger.info "Scrub Complete!".white
+    logger.info "Scrub Complete!".white
   end
 end
 

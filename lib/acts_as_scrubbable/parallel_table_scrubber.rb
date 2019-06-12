@@ -34,33 +34,25 @@ module ActsAsScrubbable
 
     attr_reader :ar_class
 
+    # create even ID ranges for the table
     def parallel_queries(ar_class:, num_batches:)
       raise "Model is missing id column" if ar_class.columns.none? { |column| column.name == "id" }
-
-      id_ranges = id_ranges_for(ar_class: ar_class, count: num_batches)
-      id_ranges.map { |id_range|
-        {id: id_range[0]..id_range[1]}
-      }
-    end
-
-    # create even ID ranges for the table
-    def id_ranges_for(ar_class:, count:)
-      last_id = 2147483647 # naive maximum ID value for sorting
-      start_id = next_id(ar_class: ar_class, offset: 0) || last_id
-      return [] if start_id == last_id # no records to import
 
       if ar_class.respond_to?(:scrubbable_scope)
         num_records = ar_class.send(:scrubbable_scope).count
       else
         num_records = ar_class.count
       end
-      record_window_size, modulus = num_records.divmod(count)
+      return [] if num_records == 0 # no records to import
+
+      record_window_size, modulus = num_records.divmod(num_batches)
       if record_window_size < 1
         record_window_size = 1
         modulus = 0
       end
 
-      id_ranges = count.times.each_with_object([]) do |_, id_ranges|
+      start_id = next_id(ar_class: ar_class, offset: 0)
+      queries = num_batches.times.each_with_object([]) do |_, queries|
         next unless start_id
 
         end_id = next_id(ar_class: ar_class, id: start_id, offset: record_window_size-1)
@@ -68,14 +60,14 @@ module ActsAsScrubbable
           end_id = next_id(ar_class: ar_class, id: end_id)
           modulus -= 1
         end
-        id_ranges << [start_id, end_id]
-        start_id = next_id(ar_class: ar_class, id: end_id)
+        queries << {id: start_id..end_id} if end_id
+        start_id = next_id(ar_class: ar_class, id: end_id || start_id)
       end
 
       # just in case new records are added since we started, extend the end ID
-      id_ranges.last[1] = last_id if id_ranges.any?
+      queries[-1] = ["#{ar_class.quoted_table_name}.id >= ?", queries[-1][:id].begin] if queries.any?
 
-      id_ranges
+      queries
     end
 
     def next_id(ar_class:, id: nil, offset: 1)
@@ -86,8 +78,7 @@ module ActsAsScrubbable
       end
       collection.reorder(:id)
       collection = collection.where("#{ar_class.quoted_table_name}.id >= :id", id: id) if id
-      next_model = collection.offset(offset).first
-      next_model&.id
+      collection.offset(offset).limit(1).pluck(:id).first
     end
   end
 end
