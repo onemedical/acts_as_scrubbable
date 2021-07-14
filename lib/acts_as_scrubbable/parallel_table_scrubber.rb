@@ -76,7 +76,7 @@ module ActsAsScrubbable
       else
         collection = ar_class.all
       end
-      collection.reorder(:id)
+      collection = collection.reorder(:id)
       collection = collection.where("#{ar_class.quoted_table_name}.id >= :id", id: id) if id
       collection.offset(offset).limit(1).pluck(:id).first
     end
