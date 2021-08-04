@@ -20,7 +20,7 @@ module ActsAsScrubbable
            end
         end
 
-        self.update_columns(_updates) unless _updates.empty?
+        _updates
       end
     end
   end
