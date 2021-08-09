@@ -37,6 +37,7 @@ module ActsAsScrubbable
     end
 
     def extract_ar_classes
+      Rails.application.eager_load! # make sure all the classes are loaded
       @ar_classes = ActiveRecord::Base.descendants.select { |d| d.scrubbable? }.sort_by { |d| d.to_s }
 
       if ENV["SCRUB_CLASSES"].present?
@@ -51,8 +52,6 @@ module ActsAsScrubbable
     end
 
     def scrub(num_of_batches: nil)
-      Rails.application.eager_load! # make sure all the classes are loaded
-
       Parallel.each(ar_classes) do |ar_class|
         ActsAsScrubbable::ArClassProcessor.new(ar_class).process(num_of_batches)
       end
