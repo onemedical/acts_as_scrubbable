@@ -9,7 +9,7 @@ namespace :scrub do
     task_runner.prompt_db_configuration
     exit unless task_runner.confirmed_configuration?
     task_runner.extract_ar_classes
-    task_runner.scrub(num_batches: 1)
+    task_runner.scrub(num_of_batches: 1)
     task_runner.after_hooks
   end
 

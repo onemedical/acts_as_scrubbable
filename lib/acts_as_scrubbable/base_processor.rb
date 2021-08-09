@@ -1,7 +1,7 @@
 module ActsAsScrubbable
   module BaseProcessor
 
-    def process_class(query = nil)
+    def scrub_query(query = nil)
       scrubbed_count = 0
       ActiveRecord::Base.connection_pool.with_connection do
         if ar_class.respond_to?(:scrubbable_scope)

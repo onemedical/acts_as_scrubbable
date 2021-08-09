@@ -50,11 +50,11 @@ module ActsAsScrubbable
       ar_classes << ar_class
     end
 
-    def scrub(num_batches: nil)
+    def scrub(num_of_batches: nil)
       Rails.application.eager_load! # make sure all the classes are loaded
 
       Parallel.each(ar_classes) do |ar_class|
-        ActsAsScrubbable::ArClassProcessor.new(ar_class).process
+        ActsAsScrubbable::ArClassProcessor.new(ar_class).process(num_of_batches)
       end
       ActiveRecord::Base.connection.verify!
     end

@@ -10,7 +10,7 @@ module ActsAsScrubbable
       @num_of_batches = num_of_batches
     end
 
-    def scrub
+    def each_query
       # Removing any find or initialize callbacks from model
       ar_class.reset_callbacks(:initialize)
       ar_class.reset_callbacks(:find)

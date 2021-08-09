@@ -18,22 +18,22 @@ module ActsAsScrubbable
       end
     end
 
-    def process
+    def process(num_of_batches)
       # Removing any find or initialize callbacks from model
-        ar_class.reset_callbacks(:initialize)
-        ar_class.reset_callbacks(:find)
+      ar_class.reset_callbacks(:initialize)
+      ar_class.reset_callbacks(:find)
 
-        ActsAsScrubbable.logger.info "Scrubbing #{ar_class} ...".green
+      ActsAsScrubbable.logger.info "Scrubbing #{ar_class} ...".green
 
-        num_of_batches = Integer(ENV.fetch("SCRUB_BATCHES", "256")) if num_of_batches.nil?
-        scrubbed_count = ActsAsScrubbable::ParallelTableScrubber.new(ar_class, num_of_batches).scrub do |query|
-          process_class(query)
-        end
+      num_of_batches = Integer(ENV.fetch("SCRUB_BATCHES", "256")) if num_of_batches.nil?
+      scrubbed_count = ActsAsScrubbable::ParallelTableScrubber.new(ar_class, num_of_batches).each_query do |query|
+        scrub_query(query)
+      end
 
-        ActsAsScrubbable.logger.info "#{scrubbed_count} #{ar_class} objects scrubbed".blue
-        ActiveRecord::Base.connection.verify!
+      ActsAsScrubbable.logger.info "#{scrubbed_count} #{ar_class} objects scrubbed".blue
+      ActiveRecord::Base.connection.verify!
 
-        ActsAsScrubbable.logger.info "Scrub Complete!".white
+      ActsAsScrubbable.logger.info "Scrub Complete!".white
     end
   end
 end
