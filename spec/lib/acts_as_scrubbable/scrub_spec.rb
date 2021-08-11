@@ -30,14 +30,14 @@ RSpec.describe ActsAsScrubbable::Scrub do
         school: "Eastern Lebsack",
       }
       expect {
-        subject.scrub!
+        subject.scrubbed_values
       }.not_to raise_error
     end
 
     it 'changes the first_name attribute when scrub is run' do
       subject.first_name = "Ted"
       allow(Faker::Name).to receive(:first_name).and_return("John")
-      _updates = subject.scrub!
+      _updates = subject.scrubbed_values
       expect(_updates[:first_name]).to eq "John"
     end
 
@@ -45,7 +45,7 @@ RSpec.describe ActsAsScrubbable::Scrub do
       subject.address1 = "123 abc"
       subject.save
       allow(Faker::Address).to receive(:street_address).and_return("1 Embarcadero")
-      _updates = subject.scrub!
+      _updates = subject.scrubbed_values
       expect(_updates[:address1]).to eq "1 Embarcadero"
     end
 
@@ -53,12 +53,12 @@ RSpec.describe ActsAsScrubbable::Scrub do
       subject.address1 = nil
       subject.save
       allow(Faker::Address).to receive(:street_address).and_return("1 Embarcadero")
-      subject.scrub!
-      expect(subject.address1).to be_nil
+      _updates = subject.scrubbed_values
+      expect(_updates[:address1]).to be_nil
     end
 
     it 'runs scrub callbacks' do
-      subject.scrub!
+      subject.scrubbed_values
       expect(subject.scrubbing_begun).to be(true)
       expect(subject.scrubbing_finished).to be(true)
     end

@@ -1,7 +1,7 @@
 module ActsAsScrubbable
   module Scrub
 
-    def scrub!
+    def scrubbed_values
       return unless self.class.scrubbable?
 
       run_callbacks(:scrub) do
