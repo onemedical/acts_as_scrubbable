@@ -1,12 +1,9 @@
 require 'acts_as_scrubbable/parallel_table_scrubber'
-
 require 'highline/import'
 require 'acts_as_scrubbable/ar_class_processor'
 
 module ActsAsScrubbable
   class TaskRunner
-
-
     attr_reader :ar_classes, :processor
     private :ar_classes, :processor
 

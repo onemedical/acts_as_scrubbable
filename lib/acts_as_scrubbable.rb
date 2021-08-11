@@ -6,6 +6,7 @@ require 'term/ansicolor'
 require 'logger'
 
 module ActsAsScrubbable
+  extend self
   extend ActiveSupport::Autoload
   include Term::ANSIColor
 
@@ -13,19 +14,25 @@ module ActsAsScrubbable
   autoload :Scrub
   autoload :VERSION
 
-  def self.configure(&block)
-    yield self
+  attr_accessor :use_upsert
+
+  class << self
+    def configure(&block)
+      self.use_upsert = ENV["USE_UPSERT"] == "true"
+
+      yield self
+    end
   end
 
-  def self.after_hook(&block)
+  def after_hook(&block)
     @after_hook = block
   end
 
-  def self.execute_after_hook
+  def execute_after_hook
     @after_hook.call if @after_hook
   end
 
-  def self.logger
+  def logger
     @logger ||= begin
                   loggger = Logger.new($stdout)
                   loggger.formatter = proc do |severity, datetime, progname, msg|
@@ -35,11 +42,11 @@ module ActsAsScrubbable
                 end
   end
 
-  def self.add(key, value)
+  def add(key, value)
     ActsAsScrubbable.scrub_map[key] = value
   end
 
-  def self.scrub_map
+  def scrub_map
     require 'faker'
 
     @_scrub_map ||= {

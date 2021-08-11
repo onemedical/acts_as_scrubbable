@@ -1,5 +1,11 @@
 module ActsAsScrubbable
   module BaseProcessor
+    attr_reader :ar_class
+    private :ar_class
+
+    def initialize(ar_class)
+      @ar_class = ar_class
+    end
 
     def scrub_query(query = nil)
       scrubbed_count = 0
