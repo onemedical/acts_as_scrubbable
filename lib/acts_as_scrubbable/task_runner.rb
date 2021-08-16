@@ -1,11 +1,12 @@
 require 'acts_as_scrubbable/parallel_table_scrubber'
 require 'highline/import'
 require 'acts_as_scrubbable/ar_class_processor'
+require 'term/ansicolor'
 
 module ActsAsScrubbable
   class TaskRunner
-    attr_reader :ar_classes, :processor
-    private :ar_classes, :processor
+    attr_reader :ar_classes
+    private :ar_classes
 
     def initialize
       @ar_classes = []
@@ -15,9 +16,9 @@ module ActsAsScrubbable
       db_host = ActiveRecord::Base.connection_config[:host]
       db_name = ActiveRecord::Base.connection_config[:database]
 
-      ActsAsScrubbable.logger.warn "Please verify the information below to continue".red
-      ActsAsScrubbable.logger.warn "Host: ".red + " #{db_host}".white
-      ActsAsScrubbable.logger.warn "Database: ".red + "#{db_name}".white
+      ActsAsScrubbable.logger.warn Term::ANSIColor.red("Please verify the information below to continue")
+      ActsAsScrubbable.logger.warn Term::ANSIColor.red("Host: ") + Term::ANSIColor.white(" #{db_host}")
+      ActsAsScrubbable.logger.warn Term::ANSIColor.red("Database: ") + Term::ANSIColor.white("#{db_name}")
     end
 
     def confirmed_configuration?
@@ -26,7 +27,7 @@ module ActsAsScrubbable
       unless ENV["SKIP_CONFIRM"] == "true"
         answer = ask("Type '#{db_host}' to continue. \n".red + '-> '.white)
         unless answer == db_host
-          ActsAsScrubbable.logger.error "exiting ...".red
+          ActsAsScrubbable.logger.error Term::ANSIColor.red("exiting ...")
           return false
         end
       end
@@ -57,7 +58,7 @@ module ActsAsScrubbable
 
     def after_hooks
       if ENV["SKIP_AFTERHOOK"].blank?
-        ActsAsScrubbable.logger.info "Running after hook".red
+        ActsAsScrubbable.logger.info Term::ANSIColor.red("Running after hook")
         ActsAsScrubbable.execute_after_hook
       end
     end
