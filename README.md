@@ -97,3 +97,22 @@ ActsAsScrubbable.configure do |c|
   end
 end
 ```
+
+### UPDATE VS UPSERT
+
+By default, the scrubbing proces will run independent UPDATE statements for each scrubbed model. This can be time 
+consuming if you are scrubbing a large number of records.  As an alternative, some 
+databases support doing bulk database updates using an upsert using the INSERT command.  `activerecord-import` 
+gives us easy support for this and as such it is a requirement to using
+this feature. Some details about the implementation can be found here. https://github.com/zdennis/activerecord-import#duplicate-key-update
+
+Note that we only support the MySQL implementation at this time.
+
+To use UPSERT over UPDATE, it can be enabled by specifying the environment variable `USE_UPSERT='true'` or through configuration.
+
+```ruby
+ActsAsScrubbable.configure do |c|
+  c.use_upsert = true
+end
+```
+

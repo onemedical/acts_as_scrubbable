@@ -1,7 +1,7 @@
 module ActsAsScrubbable
   module Scrub
 
-    def scrub!
+    def scrubbed_values
       return unless self.class.scrubbable?
 
       run_callbacks(:scrub) do
@@ -20,7 +20,7 @@ module ActsAsScrubbable
            end
         end
 
-        self.update_columns(_updates) unless _updates.empty?
+        _updates
       end
     end
   end

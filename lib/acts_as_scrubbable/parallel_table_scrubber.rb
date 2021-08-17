@@ -2,40 +2,28 @@ require "parallel"
 
 module ActsAsScrubbable
   class ParallelTableScrubber
-    def initialize(ar_class)
+    attr_reader :ar_class, :num_of_batches
+    private :ar_class, :num_of_batches
+
+    def initialize(ar_class, num_of_batches)
       @ar_class = ar_class
+      @num_of_batches = num_of_batches
     end
 
-    def scrub(num_batches:)
+    def each_query
       # Removing any find or initialize callbacks from model
       ar_class.reset_callbacks(:initialize)
       ar_class.reset_callbacks(:find)
 
-      queries = parallel_queries(ar_class: ar_class, num_batches: num_batches)
-      scrubbed_count = Parallel.map(queries) { |query|
-        scrubbed_count = 0
-        ActiveRecord::Base.connection_pool.with_connection do
-          relation = ar_class
-          relation = relation.send(:scrubbable_scope) if ar_class.respond_to?(:scrubbable_scope)
-          relation.where(query).find_in_batches(batch_size: 1000) do |batch|
-            ActiveRecord::Base.transaction do
-              batch.each do |obj|
-                obj.scrub!
-                scrubbed_count += 1
-              end
-            end
-          end
-        end
-        scrubbed_count
-      }.reduce(:+)
+      Parallel.map(parallel_queries) { |query|
+        yield(query)
+      }.reduce(:+) # returns the aggregated scrub count
     end
 
     private
 
-    attr_reader :ar_class
-
     # create even ID ranges for the table
-    def parallel_queries(ar_class:, num_batches:)
+    def parallel_queries
       raise "Model is missing id column" if ar_class.columns.none? { |column| column.name == "id" }
 
       if ar_class.respond_to?(:scrubbable_scope)
@@ -45,22 +33,22 @@ module ActsAsScrubbable
       end
       return [] if num_records == 0 # no records to import
 
-      record_window_size, modulus = num_records.divmod(num_batches)
+      record_window_size, modulus = num_records.divmod(num_of_batches)
       if record_window_size < 1
         record_window_size = 1
         modulus = 0
       end
 
       start_id = next_id(ar_class: ar_class, offset: 0)
-      queries = num_batches.times.each_with_object([]) do |_, queries|
+      queries = num_of_batches.times.each_with_object([]) do |_, queries|
         next unless start_id
 
-        end_id = next_id(ar_class: ar_class, id: start_id, offset: record_window_size-1)
+        end_id = next_id(ar_class: ar_class, id: start_id, offset: record_window_size - 1)
         if modulus > 0
           end_id = next_id(ar_class: ar_class, id: end_id)
           modulus -= 1
         end
-        queries << {id: start_id..end_id} if end_id
+        queries << { id: start_id..end_id } if end_id
         start_id = next_id(ar_class: ar_class, id: end_id || start_id)
       end
 
