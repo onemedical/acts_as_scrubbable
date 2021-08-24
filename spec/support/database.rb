@@ -11,6 +11,10 @@ RSpec.configure do |config|
   config.include include NullDB::RSpec::NullifiedDatabase
 end
 
+module ImportSupport
+  def import(*, **); end
+end
+
 
 class NonScrubbableModel < ActiveRecord::Base; end
 

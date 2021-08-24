@@ -14,7 +14,7 @@ module ActsAsScrubbable
       end
       ar_class.import(
         batch,
-        on_duplicate_key_update: ar_class.scrubbable_fields.keys.map { |x| "#{x} = values(#{x})" }.join(" , "),
+        on_duplicate_key_update: ar_class.scrubbable_fields.keys.map { |x| "`#{x}` = values(`#{x}`)" }.join(" , "),
         validate: false,
         timestamps: false
       )
