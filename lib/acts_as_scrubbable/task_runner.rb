@@ -54,6 +54,8 @@ module ActsAsScrubbable
         ActsAsScrubbable::ArClassProcessor.new(ar_class).process(num_of_batches)
       end
       ActiveRecord::Base.connection.verify!
+
+      after_hooks
     end
 
     def after_hooks
