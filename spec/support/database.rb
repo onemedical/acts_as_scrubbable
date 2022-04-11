@@ -1,7 +1,11 @@
 require 'nulldb/rails'
 require 'nulldb_rspec'
 
-ActiveRecord::Base.configurations.merge!("test" => {adapter: 'nulldb'})
+if ActiveRecord::Base.configurations.respond_to?(:merge!)
+  ActiveRecord::Base.configurations.merge!("test" => {adapter: 'nulldb'})
+else
+  ActiveRecord::Base.configurations = ActiveRecord::DatabaseConfigurations.new(test: {adapter: 'nulldb'})
+end
 
 NullDB.configure do |c|
   c.project_root = './spec'
