@@ -24,6 +24,14 @@ module ActsAsScrubbable
     end
   end
 
+  def before_hook(&block)
+    @before_hook = block
+  end
+
+  def execute_before_hook
+    @before_hook.call if @before_hook
+  end
+
   def after_hook(&block)
     @after_hook = block
   end
