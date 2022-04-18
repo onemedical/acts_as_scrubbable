@@ -49,29 +49,29 @@ module ActsAsScrubbable
       ar_classes << ar_class
     end
 
-    def scrub(num_of_batches: nil)
-      before_hooks
+    def scrub(num_of_batches: nil, skip_before_hooks: false, skip_after_hooks: false)
+      before_hooks unless skip_before_hooks
 
       Parallel.each(ar_classes) do |ar_class|
         ActsAsScrubbable::ArClassProcessor.new(ar_class).process(num_of_batches)
       end
       ActiveRecord::Base.connection.verify!
 
-      after_hooks
+      after_hooks unless skip_after_hooks
     end
 
     def before_hooks
-      if ENV["SKIP_BEFOREHOOK"].blank?
-        ActsAsScrubbable.logger.info Term::ANSIColor.red("Running before hook")
-        ActsAsScrubbable.execute_before_hook
-      end
+      return if ENV["SKIP_BEFOREHOOK"]
+
+      ActsAsScrubbable.logger.info Term::ANSIColor.red("Running before hook")
+      ActsAsScrubbable.execute_before_hook
     end
 
     def after_hooks
-      if ENV["SKIP_AFTERHOOK"].blank?
-        ActsAsScrubbable.logger.info Term::ANSIColor.red("Running after hook")
-        ActsAsScrubbable.execute_after_hook
-      end
+      return if ENV["SKIP_AFTERHOOK"]
+
+      ActsAsScrubbable.logger.info Term::ANSIColor.red("Running after hook")
+      ActsAsScrubbable.execute_after_hook
     end
   end
 end
