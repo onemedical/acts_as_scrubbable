@@ -18,7 +18,7 @@ namespace :scrub do
     task_runner.prompt_db_configuration
     exit unless task_runner.confirmed_configuration?
     task_runner.set_ar_class(args[:ar_class].constantize)
-    task_runner.scrub
+    task_runner.scrub(skip_after_hooks: true)
   end
 end
 
