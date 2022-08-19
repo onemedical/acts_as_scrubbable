@@ -13,8 +13,8 @@ module ActsAsScrubbable
     end
 
     def prompt_db_configuration
-      db_host = ActiveRecord::Base.connection_config[:host]
-      db_name = ActiveRecord::Base.connection_config[:database]
+      db_host = ActiveRecord::Base.connection_db_config.host
+      db_name = ActiveRecord::Base.connection_db_config.database
 
       ActsAsScrubbable.logger.warn Term::ANSIColor.red("Please verify the information below to continue")
       ActsAsScrubbable.logger.warn Term::ANSIColor.red("Host: ") + Term::ANSIColor.white(" #{db_host}")
@@ -22,10 +22,10 @@ module ActsAsScrubbable
     end
 
     def confirmed_configuration?
-      db_host = ActiveRecord::Base.connection_config[:host]
+      db_host = ActiveRecord::Base.connection_db_config.host
 
       unless ENV["SKIP_CONFIRM"] == "true"
-        answer = ask("Type '#{db_host}' to continue. \n".red + '-> '.white)
+        answer = ask(Term::ANSIColor.red("Type '#{db_host}' to continue. \n") + Term::ANSIColor.white("-> "))
         unless answer == db_host
           ActsAsScrubbable.logger.error Term::ANSIColor.red("exiting ...")
           return false

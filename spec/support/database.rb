@@ -1,14 +1,10 @@
-require 'nulldb/rails'
-require 'nulldb_rspec'
+require "nulldb/rails"
+require "nulldb_rspec"
 
-if ActiveRecord::Base.configurations.respond_to?(:merge!)
-  ActiveRecord::Base.configurations.merge!("test" => {adapter: 'nulldb'})
-else
-  ActiveRecord::Base.configurations = ActiveRecord::DatabaseConfigurations.new(test: {adapter: 'nulldb'})
-end
+ActiveRecord::Base.configurations = ActiveRecord::DatabaseConfigurations.new(test: {adapter: "nulldb"})
 
 NullDB.configure do |c|
-  c.project_root = './spec'
+  c.project_root = "./spec"
 end
 
 RSpec.configure do |config|
@@ -48,4 +44,12 @@ class ScrubbableModel < ActiveRecord::Base
   set_callback :scrub, :after do
     self.scrubbing_finished = true
   end
+end
+
+class AnotherScrubbableModel < ActiveRecord::Base
+  acts_as_scrubbable :active => :boolean
+end
+
+class AThirdScrubbableModel < ActiveRecord::Base
+  acts_as_scrubbable :active => :boolean
 end
