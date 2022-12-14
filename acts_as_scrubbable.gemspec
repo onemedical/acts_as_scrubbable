@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
   s.summary     = %q{Scrubbing data made easy}
   s.description = %q{ActsAsScrubbable helps you scrub your database the easy way with mock data at the ActiveRecord level}
   s.license     = "MIT"
-  s.required_ruby_version = '~> 2.0'
+  s.required_ruby_version = ['>= 2.0', '< 4.0']
 
   s.add_runtime_dependency 'activesupport'    , '>= 6.1', '< 8'
   s.add_runtime_dependency 'activerecord'     , '>= 6.1', '< 8'
