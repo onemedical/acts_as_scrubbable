@@ -17,7 +17,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'activerecord'     , '>= 6.1', '< 8'
   s.add_runtime_dependency 'railties'         , '>= 6.1', '< 8'
   s.add_runtime_dependency 'faker'            , '>= 1.4'
-  s.add_runtime_dependency 'highline'         , '>= 1.7'
+  s.add_runtime_dependency 'highline'         , '>= 2.1.0'
   s.add_runtime_dependency 'term-ansicolor'   , '>= 1.3'
   s.add_runtime_dependency 'parallel'         , '>= 1.6'
 
