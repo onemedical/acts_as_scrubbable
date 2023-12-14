@@ -1,0 +1,18 @@
+version: 2.1
+  jobs:
+    build:
+      working_directory: ~/acts_as_scrubbable
+        docker:
+          - image: cimg/ruby:3.2.2
+
+        steps:
+          - checkout
+          - ruby/install-deps
+
+          - run:
+            name: Run Tests
+            command: |
+              mkdir /tmp/test_results
+              ./cc-test-reporter before-build
+
+              bundle exec rspec --format progress
