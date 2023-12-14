@@ -37,7 +37,6 @@ RSpec.describe ActsAsScrubbable::ArClassProcessor do
     end
 
     it "calls the expected helper classes with the expected batch size" do
-      expect(ActiveRecord::Base.connection).to receive(:verify!)
       expect(update_processor_mock).to receive(:scrub_query).with(query)
       subject.process(num_of_batches)
       expect(ActsAsScrubbable::ParallelTableScrubber).to have_received(:new).with(ar_class, 256)

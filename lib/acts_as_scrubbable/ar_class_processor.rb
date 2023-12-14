@@ -28,7 +28,7 @@ module ActsAsScrubbable
       end
 
       ActsAsScrubbable.logger.info Term::ANSIColor.blue("#{scrubbed_count} #{ar_class} objects scrubbed")
-      ActiveRecord::Base.connection.verify!
+      ActiveRecord::Base.connection.verify! unless ActiveRecord::Base.connection.is_a?(ActiveRecord::ConnectionAdapters::NullDBAdapter)
 
       ActsAsScrubbable.logger.info Term::ANSIColor.white("Scrub Complete!")
     end

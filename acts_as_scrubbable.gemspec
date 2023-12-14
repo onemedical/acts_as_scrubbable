@@ -26,7 +26,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'guard-rspec'  , '~> 4.6'
   s.add_development_dependency 'pry-byebug'   , '~> 3.2'
   s.add_development_dependency 'terminal-notifier-guard' , '~> 1.6'
-  s.add_development_dependency 'activerecord-nulldb-adapter', '~> 0.3'
+  s.add_development_dependency 'activerecord-nulldb-adapter', '~> 1.0'
 
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- spec/*`.split("\n")
