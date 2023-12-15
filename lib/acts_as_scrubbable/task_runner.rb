@@ -55,7 +55,7 @@ module ActsAsScrubbable
       Parallel.each(ar_classes) do |ar_class|
         ActsAsScrubbable::ArClassProcessor.new(ar_class).process(num_of_batches)
       end
-      ActiveRecord::Base.connection.verify! unless ActiveRecord::Base.connection.is_a?(ActiveRecord::ConnectionAdapters::NullDBAdapter)
+      ActiveRecord::Base.connection.verify! if ActiveRecord::Base.connection.respond_to?(:reconnect)
 
       after_hooks unless skip_after_hooks
     end
