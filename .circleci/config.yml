@@ -12,6 +12,8 @@ jobs:
     steps:
       - checkout
       - ruby/install-deps:
+          # Guess we have to keep updating this
+          bundler-version: 2.5.3
           # Always install the latest versions available
           with-cache: false
       - ruby/rspec-test
