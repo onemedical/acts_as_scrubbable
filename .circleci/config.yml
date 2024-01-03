@@ -11,5 +11,7 @@ jobs:
 
     steps:
       - checkout
-      - ruby/install-deps
+      - ruby/install-deps:
+          # Always install the latest versions available
+          with-cache: false
       - ruby/rspec-test
