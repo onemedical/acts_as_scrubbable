@@ -14,6 +14,8 @@ jobs:
       - ruby/install-deps:
           # Have to set this since there's no lockfile
           bundler-version: ">2"
+          # Do not use deployment mode, because we don't have a lockfile
+          path: "bundle"
           # Always install the latest versions available
           with-cache: false
       - ruby/rspec-test
