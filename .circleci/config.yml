@@ -30,5 +30,7 @@ workflows:
           matrix:
             parameters:
               ruby-version:
-                - "3.0.6"
+                - "3.3.0"
                 - "3.2.2"
+                - "3.1.4"
+                - "3.0.6"
