@@ -9,12 +9,11 @@ jobs:
       ruby-version:
         type: string
 
-    docker:
-      - image: cimg/base:stable
+    executor:
+      name: ruby/default
+      tag: <<parameters.ruby-version>>
     steps:
       - checkout
-      - ruby/install:
-          version: <<parameters.ruby-version>>
       - ruby/install-deps:
           # Have to set this since there's no lockfile
           bundler-version: ">2"
