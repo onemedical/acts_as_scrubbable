@@ -12,6 +12,7 @@ _references:
       - "~> 7.1.0"
       - "~> 7.0.0"
       - "~> 6.1.0"
+      - "main"
 
 orbs:
   ruby: circleci/ruby@2.1.0
@@ -86,6 +87,9 @@ workflows:
             parameters:
               <<: *ruby_versions
               <<: *rails_versions
+            exclude:
+              - ruby-version: 3.0.6
+                rails-version: main
       - test-ruby-head:
           matrix:
             parameters:
