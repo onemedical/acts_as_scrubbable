@@ -1,5 +1,18 @@
 version: 2.1
 
+_references:
+  ruby_versions: &ruby_versions
+    ruby-version:
+      - "3.3.0"
+      - "3.2.2"
+      - "3.1.4"
+      - "3.0.6"
+  rails_versions: &rails_versions
+    rails-version:
+      - "~> 7.1.0"
+      - "~> 7.0.0"
+      - "~> 6.1.0"
+
 orbs:
   ruby: circleci/ruby@2.1.0
 
@@ -26,6 +39,44 @@ jobs:
           # Always install the latest versions available
           with-cache: false
       - ruby/rspec-test
+  test-ruby-head:
+    parameters:
+      rails-version:
+        type: string
+    docker:
+      - image: cimg/base:stable
+    environment:
+      RAILS_VERSION: <<parameters.rails-version>>
+    steps:
+      - checkout
+      - ruby/install:
+          # RVM wants Ruby 2 for some reason to install Ruby head.
+          # But then it will use 2.7.8 by default in the future;
+          # we must use `rvm use ruby-head` before every command that matters
+          version: "2.7.8"
+      - ruby/install:
+          version: ruby-head
+      - restore_cache:
+          keys:
+            - v1-{{ arch }}-ruby-head-bundler
+      - run:
+          name: Install Ruby dependencies
+          command: |
+            rvm use ruby-head
+            ruby --version
+            gem install bundler
+            bundle config set path bundle
+            bundle update
+      - save_cache:
+          key: v1-{{ arch }}-ruby-head-bundler
+          paths:
+            - ./bundle
+      - run:
+          name: RSpec tests
+          command: |
+            rvm use ruby-head
+            ruby --version
+            bundle exec rspec
 
 workflows:
   test:
@@ -33,12 +84,9 @@ workflows:
       - test:
           matrix:
             parameters:
-              ruby-version:
-                - "3.3.0"
-                - "3.2.2"
-                - "3.1.4"
-                - "3.0.6"
-              rails-version:
-                - "~> 7.1.0"
-                - "~> 7.0.0"
-                - "~> 6.1.0"
+              <<: *ruby_versions
+              <<: *rails_versions
+      - test-ruby-head:
+          matrix:
+            parameters:
+              <<: *rails_versions
