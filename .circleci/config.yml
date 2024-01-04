@@ -77,7 +77,10 @@ jobs:
           command: |
             rvm use ruby-head
             ruby --version
-            bundle exec rspec
+            mkdir -p /tmp/test-results/rspec
+            bundle exec rspec --profile 10 --format RspecJunitFormatter --out /tmp/test-results/rspec/results.xml --format progress
+      - store_test_results:
+          path: /tmp/test-results/rspec
 
 workflows:
   test:
