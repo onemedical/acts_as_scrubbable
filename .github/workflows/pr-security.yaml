@@ -10,11 +10,17 @@ name: PR Security
 on:
   pull_request:
     branches: [main, master]
+  push:
+    branches:
+      - gh-readonly-queue/master/**
 
 
 permissions:
   # Required for workflows in private repositories.
   contents: read
+
+  # Required to write summary PR comments of results.
+  pull-requests: write
 
   # Required for SARIF results upload to GHAS.
   security-events: write
