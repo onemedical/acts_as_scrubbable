@@ -7,11 +7,11 @@ _references:
       - "3.2.2"
       - "3.1.4"
       - "3.0.6"
-  rails_versions: &rails_versions
-    rails-version:
-      - "~> 7.1.0"
-      - "~> 7.0.0"
-      - "~> 6.1.0"
+  rails_version_prefixess: &rails_version_prefixes
+    rails-version-prefix:
+      - "7.1"
+      - "7.0"
+      - "6.1"
       - "main"
 
 orbs:
@@ -22,14 +22,14 @@ jobs:
     parameters:
       ruby-version:
         type: string
-      rails-version:
+      rails-version-prefix:
         type: string
 
     executor:
       name: ruby/default
       tag: <<parameters.ruby-version>>
     environment:
-      RAILS_VERSION: <<parameters.rails-version>>
+      RAILS_VERSION_PREFIX: <<parameters.rails-version-prefix>>
     steps:
       - checkout
       - ruby/install-deps:
@@ -42,12 +42,12 @@ jobs:
       - ruby/rspec-test
   test-ruby-head:
     parameters:
-      rails-version:
+      rails-version-prefix:
         type: string
     docker:
       - image: cimg/base:stable
     environment:
-      RAILS_VERSION: <<parameters.rails-version>>
+      RAILS_VERSION: <<parameters.rails-version-prefix>>
     steps:
       - checkout
       - ruby/install:
@@ -83,14 +83,16 @@ workflows:
   test:
     jobs:
       - test:
+          name: "test-ruby-<<matrix.ruby-version>>-rails-<<matrix.rails-version-prefix>>"
           matrix:
             parameters:
               <<: *ruby_versions
-              <<: *rails_versions
+              <<: *rails_version_prefixes
             exclude:
               - ruby-version: 3.0.6
-                rails-version: main
+                rails-version-prefix: main
       - test-ruby-head:
+          name: "test-ruby-head-rails-<<matrix.rails-version-prefix>>"
           matrix:
             parameters:
-              <<: *rails_versions
+              <<: *rails_version_prefixes
