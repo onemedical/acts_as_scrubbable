@@ -8,10 +8,14 @@ jobs:
     parameters:
       ruby-version:
         type: string
+      rails-version:
+        type: string
 
     executor:
       name: ruby/default
       tag: <<parameters.ruby-version>>
+    environment:
+      RAILS_VERSION: <<parameters.rails-version>>
     steps:
       - checkout
       - ruby/install-deps:
@@ -34,3 +38,7 @@ workflows:
                 - "3.2.2"
                 - "3.1.4"
                 - "3.0.6"
+              rails-version:
+                - "~> 7.1.0"
+                - "~> 7.0.0"
+                - "~> 6.1.0"
