@@ -4,13 +4,17 @@ orbs:
   ruby: circleci/ruby@2.1.0
 
 jobs:
-  build:
-    working_directory: ~/acts_as_scrubbable
-    docker:
-      - image: cimg/ruby:3.2.2
+  test:
+    parameters:
+      ruby-version:
+        type: string
 
+    docker:
+      - image: cimg/base:stable
     steps:
       - checkout
+      - ruby/install:
+          version: <<parameters.ruby-version>>
       - ruby/install-deps:
           # Have to set this since there's no lockfile
           bundler-version: ">2"
@@ -19,3 +23,13 @@ jobs:
           # Always install the latest versions available
           with-cache: false
       - ruby/rspec-test
+
+workflows:
+  test:
+    jobs:
+      - test:
+          matrix:
+            parameters:
+              ruby-version:
+                - "3.0.6"
+                - "3.2.2"
