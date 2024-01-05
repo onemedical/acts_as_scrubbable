@@ -1,0 +1,109 @@
+version: 2.1
+
+_references:
+  ruby_versions: &ruby_versions
+    ruby-version:
+      - "3.3.0"
+      - "3.2.2"
+      - "3.1.4"
+      - "3.0.6"
+  rails_version_prefixess: &rails_version_prefixes
+    rails-version-prefix:
+      - "7.1"
+      - "7.0"
+      - "6.1"
+
+orbs:
+  ruby: circleci/ruby@2.1.0
+
+jobs:
+  test:
+    parameters:
+      ruby-version:
+        type: string
+      rails-version-prefix:
+        type: string
+
+    executor:
+      name: ruby/default
+      tag: <<parameters.ruby-version>>
+    environment:
+      RAILS_VERSION_PREFIX: <<parameters.rails-version-prefix>>
+    steps:
+      - checkout
+      - ruby/install-deps:
+          # Have to set this since there's no lockfile
+          bundler-version: ">2"
+          # Do not use deployment mode, because we don't have a lockfile
+          path: "bundle"
+          # Always install the latest versions available
+          with-cache: false
+      - ruby/rspec-test
+  test-ruby-head:
+    parameters:
+      rails-version-prefix:
+        type: string
+    docker:
+      - image: cimg/base:stable
+    environment:
+      RAILS_VERSION: <<parameters.rails-version-prefix>>
+    steps:
+      - checkout
+      - ruby/install:
+          # RVM wants Ruby 2 for some reason to install Ruby head.
+          # But then it will use 2.7.8 by default in the future;
+          # we must use `rvm use ruby-head` before every command that matters
+          version: "2.7.8"
+      - ruby/install:
+          version: ruby-head
+      - restore_cache:
+          keys:
+            - v1-{{ arch }}-ruby-head-bundler
+      - run:
+          name: Install Ruby dependencies
+          command: |
+            rvm use ruby-head
+            ruby --version
+            gem install bundler
+            bundle config set path bundle
+            bundle update
+      - save_cache:
+          key: v1-{{ arch }}-ruby-head-bundler
+          paths:
+            - ./bundle
+      - run:
+          name: RSpec tests
+          command: |
+            rvm use ruby-head
+            ruby --version
+            mkdir -p /tmp/test-results/rspec
+            bundle exec rspec --profile 10 --format RspecJunitFormatter --out /tmp/test-results/rspec/results.xml --format progress
+      - store_test_results:
+          path: /tmp/test-results/rspec
+
+workflows:
+  test:
+    jobs:
+      - test:
+          name: "test-ruby-<<matrix.ruby-version>>-rails-<<matrix.rails-version-prefix>>"
+          matrix:
+            parameters:
+              <<: *ruby_versions
+              <<: *rails_version_prefixes
+  test-head:
+    jobs:
+      - test:
+          name: "test-ruby-<<matrix.ruby-version>>-rails-main"
+          matrix:
+            parameters:
+              <<: *ruby_versions
+              rails-version-prefix:
+                - main
+            exclude:
+              - ruby-version: 3.0.6
+                rails-version-prefix: main
+      - test-ruby-head:
+          name: "test-ruby-head-rails-<<matrix.rails-version-prefix>>"
+          matrix:
+            parameters:
+              <<: *rails_version_prefixes
