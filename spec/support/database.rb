@@ -53,3 +53,9 @@ end
 class AThirdScrubbableModel < ActiveRecord::Base
   acts_as_scrubbable :active => :boolean
 end
+
+class MissingScrubbableModel < ActiveRecord::Base
+  attr_accessor :first_name, :last_name
+
+  acts_as_scrubbable :last_name, :first_name => :fake_first_name
+end

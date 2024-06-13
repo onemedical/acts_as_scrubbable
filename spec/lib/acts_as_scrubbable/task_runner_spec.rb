@@ -53,10 +53,11 @@ RSpec.describe ActsAsScrubbable::TaskRunner do
     it "scrubs all scrubbable classes", :aggregate_failures do
       runner.extract_ar_classes
       runner.scrub(num_of_batches: 1)
-      expect(processor).to have_received(:process).with(1).exactly(3).times
+      expect(processor).to have_received(:process).with(1).exactly(4).times
       expect(ActsAsScrubbable::ArClassProcessor).to have_received(:new).with(ScrubbableModel)
       expect(ActsAsScrubbable::ArClassProcessor).to have_received(:new).with(AnotherScrubbableModel)
       expect(ActsAsScrubbable::ArClassProcessor).to have_received(:new).with(AThirdScrubbableModel)
+      expect(ActsAsScrubbable::ArClassProcessor).to have_received(:new).with(MissingScrubbableModel)
       expect(ActsAsScrubbable::ArClassProcessor).not_to have_received(:new).with(NonScrubbableModel)
     end
 

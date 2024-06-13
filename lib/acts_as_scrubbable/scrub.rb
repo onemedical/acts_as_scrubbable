@@ -16,7 +16,7 @@ module ActsAsScrubbable
           if ActsAsScrubbable.scrub_map.keys.include?(value)
             _updates[_field] = ActsAsScrubbable.scrub_map[value].call
           else
-            puts "Undefined scrub: #{value} for #{self.class}#{_field}"
+            puts "Undefined scrub: #{value} for #{self.class}.#{_field}"
            end
         end
 
