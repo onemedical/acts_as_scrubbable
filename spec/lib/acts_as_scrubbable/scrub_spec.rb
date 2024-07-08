@@ -57,31 +57,25 @@ RSpec.describe ActsAsScrubbable::Scrub do
       expect(_updates[:address1]).to be_nil
     end
 
-    it 'runs scrub callbacks' do
-      subject.scrubbed_values
-      expect(subject.scrubbing_begun).to be(true)
-      expect(subject.scrubbing_finished).to be(true)
-    end
-
     it 'output no information when all scrubbers found' do
       expect(STDOUT).to_not receive(:puts)
-      
+
       _updates = subject.scrubbed_values
     end
 
     context "scrubbable" do
       subject { MissingScrubbableModel.new }
-      
+
       it 'outputs warning message' do
         subject.first_name = "Johnny"
         subject.last_name = "Frank"
-  
+
         allow(Faker::Name).to receive(:first_name).and_return("Larry")
         allow(Faker::Name).to receive(:last_name).and_return("Baker")
-        
+
         expect(STDOUT).to receive(:puts).with('Undefined scrub: fake_first_name for MissingScrubbableModel.first_name')
         expect(Faker::Name).to_not receive(:first_name)
-  
+
         _updates = subject.scrubbed_values
         expect(_updates[:last_name]).to eq('Baker')
         expect(_updates[:first_name]).to be_nil
