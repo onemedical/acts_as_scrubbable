@@ -15,5 +15,11 @@ RSpec.describe ActsAsScrubbable::UpdateProcessor do
 
       expect(subject.send(:handle_batch, [model])).to eq 1
     end
+
+    it "runs scrub callbacks" do
+      subject.send(:handle_batch, [model])
+      expect(model.scrubbing_begun).to be(true)
+      expect(model.scrubbing_finished).to be(true)
+    end
   end
 end

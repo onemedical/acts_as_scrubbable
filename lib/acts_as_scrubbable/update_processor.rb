@@ -8,8 +8,10 @@ module ActsAsScrubbable
     def handle_batch(batch)
       scrubbed_count = 0
       batch.each do |obj|
-        _updates = obj.scrubbed_values
-        obj.update_columns(_updates) unless _updates.empty?
+        obj.run_callbacks(:scrub) do
+          _updates = obj.scrubbed_values
+          obj.update_columns(_updates) unless _updates.empty?
+        end
         scrubbed_count += 1
       end
       scrubbed_count
