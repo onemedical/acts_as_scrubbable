@@ -9,6 +9,7 @@ _references:
       - "3.0"
   rails_version_prefixess: &rails_version_prefixes
     rails-version-prefix:
+      - "8.0"
       - "7.2"
       - "7.1"
       - "7.0"
@@ -94,6 +95,10 @@ workflows:
             exclude:
               - ruby-version: "3.0"
                 rails-version-prefix: "7.2"
+              - ruby-version: "3.0"
+                rails-version-prefix: "8.0"
+              - ruby-version: "3.1"
+                rails-version-prefix: "8.0"
   test-head:
     jobs:
       - test:
