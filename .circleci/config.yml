@@ -3,6 +3,7 @@ version: 2.1
 _references:
   ruby_versions: &ruby_versions
     ruby-version:
+      - "3.4"
       - "3.3"
       - "3.2"
       - "3.1"
